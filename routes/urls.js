@@ -1,7 +1,7 @@
 import express from 'express';
 import { nanoid } from 'nanoid';
 import Url from '../models/Url.js';
-import { validateUrl } from '../utils/utils.js';
+import { validateUrl, formatDate } from '../utils/utils.js';
 import dotenv from 'dotenv';
 dotenv.config({ path: '../config/.env' });
 
@@ -25,7 +25,7 @@ router.post('/short', async (req, res) => {
           origUrl,
           shortUrl,
           urlId,
-          date: new Date(),
+          date: formatDate(new Date()),
         });
 
         await url.save();
@@ -37,6 +37,64 @@ router.post('/short', async (req, res) => {
     }
   } else {
     res.status(400).json('Invalid Original Url');
+  }
+});
+
+//Get by id
+router.get('/id/:urlId', async (req, res) => {
+  try {
+    const url = await Url.findOne({ urlId: req.params.urlId });
+    if (url) {
+      await Url.updateOne(
+        {
+          urlId: req.params.urlId,
+        },
+        { $inc: { clicks: 1 } }
+      );
+      return res.json(url);
+    } else res.status(404).json('Not found');
+  } catch (err) {
+    console.log(err);
+    res.status(500).json('Server Error');
+  }
+});
+
+//Get URL by short url
+router.get('/short/:short', async (req, res) => {
+  try {
+  const base = process.env.BASE;
+  const url = await Url.findOne({ shortUrl : `${base}/${req.params.short}` });
+    if (url) {
+      await Url.updateOne(
+        {
+          urlId: req.params.urlId,
+        },
+        { $inc: { clicks: 1 } }
+      );
+      return res.json(url);
+    } else res.status(404).json('Not found');
+  } catch (err) {
+    console.log(err);
+    res.status(500).json('Server Error');
+  }
+});
+
+//Get by Date
+router.get('/date/:date', async (req, res) => {
+  try {
+  const url = await Url.find({ date : req.params.date });
+    if (url) {
+      await Url.updateOne(
+        {
+          urlId: req.params.urlId,
+        },
+        { $inc: { clicks: 1 } }
+      );
+      return res.json(url);
+    } else res.status(404).json('Not found');
+  } catch (err) {
+    console.log(err);
+    res.status(500).json('Server Error');
   }
 });
 
