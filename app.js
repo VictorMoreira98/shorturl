@@ -6,6 +6,21 @@ const app = express();
 
 connectDB();
 
+import cors from 'cors'
+
+var originsWhitelist = [
+   'http://node-app-403112.uc.r.appspot.com'
+];
+var corsOptions = {
+  origin: function(origin, callback){
+        var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+        callback(null, isWhitelisted);
+  },
+  credentials:true
+}
+
+app.use(cors(corsOptions));
+
 import urlsRouter from './routes/urls.js';
 
 import swaggerUi from 'swagger-ui-express';
