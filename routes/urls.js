@@ -9,6 +9,7 @@ const router = express.Router();
 
 // Short URL Generator
 router.post('/short', async (req, res) => {
+  // #swagger.tags = ['Create short']
   const { origUrl } = req.body;
   const base = process.env.BASE;
 
@@ -42,6 +43,7 @@ router.post('/short', async (req, res) => {
 
 //Get by id
 router.get('/id/:urlId', async (req, res) => {
+  // #swagger.tags = ['Find short']
   try {
     const url = await Url.findOne({ urlId: req.params.urlId });
     if (url) {
@@ -61,6 +63,7 @@ router.get('/id/:urlId', async (req, res) => {
 
 //Get URL by short url
 router.get('/short/:short', async (req, res) => {
+    // #swagger.tags = ['Find short']
   try {
   const base = process.env.BASE;
   const url = await Url.findOne({ shortUrl : `${base}/${req.params.short}` });
@@ -81,6 +84,7 @@ router.get('/short/:short', async (req, res) => {
 
 //Get by Date
 router.get('/date/:date', async (req, res) => {
+    // #swagger.tags = ['Find short']
   try {
   const url = await Url.find({ date : req.params.date });
     if (url) {

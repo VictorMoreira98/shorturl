@@ -8,6 +8,10 @@ connectDB();
 
 import urlsRouter from './routes/urls.js';
 
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './docs/swagger.json' assert {type : "json"};
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // Body Parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
